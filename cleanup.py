@@ -4,7 +4,7 @@ import os
 
 
 
-PROJECT_DIR = '.'
+PROJECT_DIR = './data/'
 FOLDERS = ['Training', 'Testing']
 LABELS = ['glioma', 'meningioma', 'notumor', 'pituitary']
 

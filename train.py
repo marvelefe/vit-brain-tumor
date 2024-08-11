@@ -10,6 +10,12 @@ from vit_pytorch import ViT
 from vit_pytorch.vit import Transformer
 from tqdm import tqdm
 from transformer import TumorClassifierViT
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+from prettytable import PrettyTable
+import arrow
+  
+tableData = PrettyTable(['Epoch', 'Time Elapsed', 'Training Loss', 'Training Accuracy', 'Validation Loss', 'Validation Accuracy'])
 
 # Set the device for training
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -24,10 +30,10 @@ data_transforms = transforms.Compose([
 ])
 
 train_dataset = ImageFolder('./data/Training', transform=data_transforms)
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 
 val_dataset = ImageFolder('./data/Testing', transform=data_transforms)
-val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 
 # Load a batch of images and labels for visualization
 data_iter = iter(train_loader)
@@ -49,9 +55,9 @@ for i, ax in enumerate(axes.flat):
         ax.imshow(images[i])
         ax.set_title(f'Label: {train_dataset.classes[labels[i]]}')
     ax.axis('off')
-
-plt.tight_layout()
-plt.show()
+ 
+plt.savefig('classes.png')  
+plt.close()
 
 
 
@@ -59,7 +65,7 @@ model = TumorClassifierViT(num_classes=4).to(device)
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.SGD(model.parameters(), lr=0.01)
 
 # Initialize lists to store training history
 train_losses = []
@@ -68,9 +74,10 @@ train_accuracies = []
 val_accuracies = []
 
 # Training loop
-# num_epochs = 20
-num_epochs = 20
+num_epochs = 30
 best_val_accuracy = 0.0
+
+startTime = arrow.now().timestamp()
 
 for epoch in range(num_epochs):
     model.train()
@@ -102,6 +109,10 @@ for epoch in range(num_epochs):
     correct = 0
     total = 0
 
+    all_labels = []
+    all_predictions = []
+
+
     with torch.no_grad():
         for inputs, labels in val_loader:
             inputs, labels = inputs.to(device), labels.to(device)
@@ -113,14 +124,22 @@ for epoch in range(num_epochs):
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
 
+            all_labels.extend(labels.cpu().numpy())
+            all_predictions.extend(predicted.cpu().numpy())
+
     val_loss /= len(val_loader)
     val_accuracy = correct / total
     val_losses.append(val_loss)
     val_accuracies.append(val_accuracy)
 
-    print(f'Epoch [{epoch+1}/{num_epochs}], '
-          f'Training Loss: {train_loss:.4f}, Training Accuracy: {train_accuracy:.2%}, '
-          f'Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.2%}')
+    print(f'Epoch [{epoch+1}/{num_epochs}], ' f'Time elapsed: {arrow.get(arrow.now().timestamp() - startTime).format("HH:mm:ss")}'
+           f'Training Loss: {train_loss:.4f}, Training Accuracy: {train_accuracy:.2%}, '
+           f'Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.2%}')
+
+    #  'Epoch', 'Time Elapsed', 'Training Loss', 'Training Accuracy', 'Validation Loss', 'Validation Accuracy'
+    currentEpoch = epoch + 1
+    if currentEpoch % 30 == 0 or currentEpoch == 1:
+        tableData.add_row([f'{currentEpoch}', f'{arrow.get(arrow.now().timestamp() - startTime).format("HH:mm:ss")}', f'{train_loss:.4f}', f'{train_accuracy:.4f}', f'{val_loss:.4f}' , f'{val_accuracy:.2%}'])
 
     # Save the best model
     if val_accuracy > best_val_accuracy:
@@ -130,26 +149,42 @@ for epoch in range(num_epochs):
 accuracy = correct / total
 print(f'Validation Accuracy: {accuracy:.2%}')
 
+print(tableData)
+
 # Visualize training history
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
+plt.figure(figsize=(10, 7))
+plt.subplot()
 plt.plot(train_losses, label='Training Loss')
 plt.plot(val_losses, label='Validation Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend()
 plt.title('Loss History')
+plt.tight_layout()
+plt.savefig('loss.png')  
+plt.close()
 
-plt.subplot(1, 2, 2)
+plt.figure(figsize=(10, 7))
+plt.subplot()
 plt.plot(train_accuracies, label='Training Accuracy')
 plt.plot(val_accuracies, label='Validation Accuracy')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
 plt.legend()
 plt.title('Accuracy History')
-
 plt.tight_layout()
-plt.show()
-
+plt.savefig('accuracy.png')  
+plt.close()
 
 # Visualize confusion matrix
+conf_matrix = confusion_matrix(all_labels, all_predictions)
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=val_dataset.classes, yticklabels=val_dataset.classes)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.savefig('confusion_matrix.png')  
+plt.close()
+
+
+
