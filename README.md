@@ -1,7 +1,7 @@
 
 # Brain Tumor Detection and Classification using Vision Transformers
 
-This repository contains an implementation of a Vision Transformer (ViT) model designed to classify brain tumor images into four categories. The model can be trained on a dataset to differentiate between Meningioma, Pituitary and Glioma brain tumor types using state-of-the-art transformer architecture with a high level of accurancy.
+This repository contains an implementation of a Vision Transformer (ViT) model designed to classify brain tumor images into four categories (Meningioma, Pituitary, Glioma and No tumor). The model can be trained on any dataset of brain tumor MRI scans.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
