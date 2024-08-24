@@ -15,7 +15,7 @@ import seaborn as sns
 from prettytable import PrettyTable
 import arrow
   
-tableData = PrettyTable(['Epoch', 'Time Elapsed', 'Training Loss', 'Training Accuracy', 'Validation Loss', 'Validation Accuracy'])
+tableData = PrettyTable(['Epoch', 'Time Elapsed (HH:mm:ss)', 'Training Loss', 'Training Accuracy', 'Validation Loss', 'Validation Accuracy'])
 
 # Set the device for training
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -74,7 +74,7 @@ train_accuracies = []
 val_accuracies = []
 
 # Training loop
-num_epochs = 30
+num_epochs = 100
 best_val_accuracy = 0.0
 
 startTime = arrow.now().timestamp()
@@ -138,7 +138,7 @@ for epoch in range(num_epochs):
 
     #  'Epoch', 'Time Elapsed', 'Training Loss', 'Training Accuracy', 'Validation Loss', 'Validation Accuracy'
     currentEpoch = epoch + 1
-    if currentEpoch % 30 == 0 or currentEpoch == 1:
+    if currentEpoch % 5 == 0 or currentEpoch == 1:
         tableData.add_row([f'{currentEpoch}', f'{arrow.get(arrow.now().timestamp() - startTime).format("HH:mm:ss")}', f'{train_loss:.4f}', f'{train_accuracy:.4f}', f'{val_loss:.4f}' , f'{val_accuracy:.2%}'])
 
     # Save the best model
