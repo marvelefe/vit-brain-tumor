@@ -77,5 +77,5 @@ The model achieves competitive accuracy in classifying tumor images across four 
 
 ## Acknowledgements
 
-This project uses the [ViT-pytorch](https://github.com/lucidrains/vit-pytorch) library for the Vision Transformer implementation. Special thanks to the authors and the open-source community.
+This project uses the [ViT-pytorch](https://github.com/lucidrains/vit-pytorch) library for the Vision Transformer implementation.
  
