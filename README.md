@@ -1,15 +1,7 @@
-Link to the sample dataset
-
-https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset
-
-
-Certainly! Here's a concise yet comprehensive README for your Vision Transformer (ViT) model-based tumor classification project:
-
----
 
 # Vision Transformer for Tumor Classification
 
-This repository contains a PyTorch implementation of a Vision Transformer (ViT) model designed to classify tumor images into four categories. The model is trained on a custom dataset and demonstrates its capability to accurately differentiate between various tumor types using state-of-the-art transformer architecture.
+This repository contains an implementation of a Vision Transformer (ViT) model designed to classify brain tumor images into four categories. The model can be trained on a dataset to differentiate between Meningioma, Pituitary and Glioma brain tumor types using state-of-the-art transformer architecture with a high level of accurancy.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -21,29 +13,13 @@ This repository contains a PyTorch implementation of a Vision Transformer (ViT) 
 - [Results](#results)
 - [Acknowledgements](#acknowledgements)
 
-## Project Overview
-This project leverages the power of Vision Transformers (ViTs) to classify medical images of tumors. The model is built using the `vit-pytorch` library, providing a robust architecture that captures complex patterns in medical imagery.
 
 ## Folder Structure
 
 ```
-VIT-POC/
-│
-├── data/                   # Dataset directory (Not included)
-├── venv/                   # Python virtual environment
-├── .gitignore              # Files and directories to be ignored by Git
-├── accuracy.png            # Plot of accuracy over epochs
-├── Archive.zip             # Compressed archive containing project files
-├── best_model.pth          # Saved model with the best validation accuracy
-├── classes.png             # Visual representation of class images
-├── cleanup.py              # Script for cleaning up data or files
-├── confusion_matrix.png    # Confusion matrix plot
-├── data.zip                # Compressed dataset (Not included)
-├── debug.py                # Script for debugging
-├── epochs.png              # Plot of training and validation loss over epochs
-├── loss.png                # Plot of loss over epochs
-├── prediction_result.png   # Image prediction result visualization
-├── README.md               # This README file
+├── data/                   # Dataset directory (Not included)   
+├── best_model.pth          # Saved model with the best validation accuracy 
+├── cleanup.py              # Script for cleaning up the dataset   
 ├── requirements.txt        # List of required Python packages
 ├── test.py                 # Script for testing the model on new images
 ├── train.py                # Script for training the model
@@ -54,7 +30,7 @@ VIT-POC/
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/VIT-POC.git
+    git clone https://github.com/marvelefe/VIT-POC.git
     cd VIT-POC
     ```
 
@@ -66,8 +42,10 @@ VIT-POC/
     ```
 
 3. **Prepare the dataset**: 
-   - Place your image dataset under the `./data/Training` and `./data/Testing` directories. 
-   - Ensure the directory structure aligns with PyTorch's `ImageFolder` format.
+   - Place your dataset under the `./data` directory and split your training and validation so you have two sub-directories: `./data/Training` and `./data/Testing` directories. 
+ 
+> A sample dataset can be downloaded here on Kaggle https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset
+   
 
 ## Training the Model
 
@@ -81,7 +59,7 @@ Training progress, including loss and accuracy for both training and validation 
 
 ## Evaluating the Model
 
-During training, the model is evaluated against the validation dataset. Post-training, a confusion matrix is generated and saved as `confusion_matrix.png`, offering insights into the model's classification performance.
+During training, the model is evaluated against the validation dataset. Post-training, a confusion matrix is generated and saved as `confusion_matrix.png`, and provides insights into the model's classification performance.
 
 ## Testing on a New Image
 
@@ -100,7 +78,4 @@ The model achieves competitive accuracy in classifying tumor images across four 
 ## Acknowledgements
 
 This project uses the [ViT-pytorch](https://github.com/lucidrains/vit-pytorch) library for the Vision Transformer implementation. Special thanks to the authors and the open-source community.
-
----
-
-This README covers all essential aspects of your project, offering clear instructions on setting up, training, and using the model. Feel free to modify the content to better match your project details or preferences!
+ 
